@@ -261,6 +261,9 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     }
 
     private ChannelFuture doBind(final SocketAddress localAddress) {
+        /**
+         * 初始化服务端Channel并注册到Selector上
+         */
         final ChannelFuture regFuture = initAndRegister();
         final Channel channel = regFuture.channel();
         if (regFuture.cause() != null) {
@@ -299,7 +302,15 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
     final ChannelFuture initAndRegister() {
         Channel channel = null;
         try {
+            /**
+             * io.netty.channel.ReflectiveChannelFactory通过反射创建服务端Channel
+             */
             channel = channelFactory.newChannel();
+            /**
+             * 初始化服务端Channel，配置一些TCP参数
+             * 服务端调用io.netty.bootstrap.ServerBootstrap#init方法
+             * 客户端调用io.netty.bootstrap.Bootstrap#init方法
+             */
             init(channel);
         } catch (Throwable t) {
             if (channel != null) {
@@ -312,6 +323,14 @@ public abstract class AbstractBootstrap<B extends AbstractBootstrap<B, C>, C ext
             return new DefaultChannelPromise(new FailedChannel(), GlobalEventExecutor.INSTANCE).setFailure(t);
         }
 
+        /**
+         * EchoServer中ServerBootstrap.group方法传入NioEventLoopGroup参数,此处group()方法则返回
+         * NioEventLoopGroup类型的实例,NioEventLoopGroup继承MultithreadEventLoopGroup类,则register方法是
+         * MultithreadEventLoopGroup中的register方法
+         *
+         * EchoServer中ServerBootstrap.channel方法传入NioServerSocketChannel参数,则ChannelFuture返回值类型为
+         * NioServerSocketChannel
+         */
         ChannelFuture regFuture = config().group().register(channel);
         if (regFuture.cause() != null) {
             if (channel.isRegistered()) {

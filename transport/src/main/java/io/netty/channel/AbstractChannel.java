@@ -465,6 +465,9 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
             AbstractChannel.this.eventLoop = eventLoop;
 
             if (eventLoop.inEventLoop()) {
+                /**
+                 * 服务端Channel注册到Selector上
+                 */
                 register0(promise);
             } else {
                 try {
@@ -493,6 +496,12 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                     return;
                 }
                 boolean firstRegistration = neverRegistered;
+                /**
+                 * 调用JDK底层注册
+                 * io.netty.channel.nio.AbstractNioChannel#doRegister
+                 * io.netty.channel.epoll.AbstractEpollChannel#doRegister  linux
+                 * io.netty.channel.epoll.AbstractKqueueChannel#doRegister  mac
+                 */
                 doRegister();
                 neverRegistered = false;
                 registered = true;
@@ -502,6 +511,9 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
                 pipeline.invokeHandlerAddedIfNeeded();
 
                 safeSetSuccess(promise);
+                /**
+                 * 传播事件
+                 */
                 pipeline.fireChannelRegistered();
                 // Only fire a channelActive if the channel has never been registered. This prevents firing
                 // multiple channel actives if the channel is deregistered and re-registered.
