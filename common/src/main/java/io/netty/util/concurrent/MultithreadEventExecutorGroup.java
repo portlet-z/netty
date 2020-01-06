@@ -76,11 +76,17 @@ public abstract class MultithreadEventExecutorGroup extends AbstractEventExecuto
             executor = new ThreadPerTaskExecutor(newDefaultThreadFactory());
         }
 
+        /**
+         * work工作线程传过来的nThreads为2倍的CPU个数
+         */
         children = new EventExecutor[nThreads];
 
         for (int i = 0; i < nThreads; i ++) {
             boolean success = false;
             try {
+                /**
+                 * 初始化EventExecutor
+                 */
                 children[i] = newChild(executor, args);
                 success = true;
             } catch (Exception e) {

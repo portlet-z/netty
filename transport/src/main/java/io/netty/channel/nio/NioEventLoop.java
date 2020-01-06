@@ -110,6 +110,7 @@ public final class NioEventLoop extends SingleThreadEventLoop {
 
     /**
      * The NIO {@link Selector}.
+     * 此处Selector是jdk中NIO的Selector
      */
     private Selector selector;
     private Selector unwrappedSelector;
@@ -275,7 +276,10 @@ public final class NioEventLoop extends SingleThreadEventLoop {
     }
 
     private static Queue<Runnable> newTaskQueue0(int maxPendingTasks) {
-        // This event loop never calls takeTask()
+        /**
+         * This event loop never calls takeTask()
+         * Mpsc (Multiple producer single consumer:多个生产者单个消费者对列)
+         */
         return maxPendingTasks == Integer.MAX_VALUE ? PlatformDependent.<Runnable>newMpscQueue()
                 : PlatformDependent.<Runnable>newMpscQueue(maxPendingTasks);
     }

@@ -50,6 +50,16 @@ public final class EchoServer {
 
         // Configure the server.
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        /**
+         * new NioEventLoopGroup();默认传0
+         * 当nThreads == 0时,
+         * protected MultithreadEventLoopGroup(int nThreads, ThreadFactory threadFactory, Object... args) {
+         *     super(nThreads == 0 ? DEFAULT_EVENT_LOOP_THREADS : nThreads, threadFactory, args);
+         * }
+         * DEFAULT_EVENT_LOOP_THREADS = Math.max(1, SystemPropertyUtil.getInt("io.netty.eventLoopThreads", NettyRuntime.availableProcessors() * 2))
+         * DEFAULT_EVENT_LOOP_THREADS取CPU核数 * 2
+         * 则work工作线程起 2 * CPU个数量
+         */
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         final EchoServerHandler serverHandler = new EchoServerHandler();
         try {
@@ -70,7 +80,10 @@ public final class EchoServer {
                  }
              });
 
-            // Start the server.
+            /**
+             * Start the server.
+             * bind方法启动入口
+             */
             ChannelFuture f = b.bind(PORT).sync();
 
             // Wait until the server socket is closed.

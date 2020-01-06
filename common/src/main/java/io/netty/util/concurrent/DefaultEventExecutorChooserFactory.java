@@ -53,6 +53,12 @@ public final class DefaultEventExecutorChooserFactory implements EventExecutorCh
 
         @Override
         public EventExecutor next() {
+            /**
+             * executors.length === 2, 4, 8, 16, 32...
+             * 当为8时  executors.length - 1 === 7 === 0111
+             * 其实与GenericEventExecutorChooser#next方法获得的结果是一直的，只不过是
+             * 按位与操作性能更高
+             */
             return executors[idx.getAndIncrement() & executors.length - 1];
         }
     }
@@ -67,6 +73,9 @@ public final class DefaultEventExecutorChooserFactory implements EventExecutorCh
 
         @Override
         public EventExecutor next() {
+            /**
+             * 对executors.length取余
+             */
             return executors[Math.abs(idx.getAndIncrement() % executors.length)];
         }
     }
