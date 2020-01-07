@@ -81,6 +81,9 @@ public abstract class AbstractNioChannel extends AbstractChannel {
         this.ch = ch;
         this.readInterestOp = readInterestOp;
         try {
+            /**
+             * NIO配置服务端为非阻塞模式
+             */
             ch.configureBlocking(false);
         } catch (IOException e) {
             try {

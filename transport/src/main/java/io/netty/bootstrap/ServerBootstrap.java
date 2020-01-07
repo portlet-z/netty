@@ -143,6 +143,7 @@ public class ServerBootstrap extends AbstractBootstrap<ServerBootstrap, ServerCh
             @Override
             public void initChannel(final Channel ch) {
                 final ChannelPipeline pipeline = ch.pipeline();
+                //从EchoServer中传过来的.handler()中的实例
                 ChannelHandler handler = config.handler();
                 if (handler != null) {
                     /**

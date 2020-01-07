@@ -63,6 +63,11 @@ public abstract class AbstractChannel extends DefaultAttributeMap implements Cha
     private String strVal;
 
     /**
+     * NioServerSocketChannel(服务端的Channel), NioSocketChannel(客户端的Channel)
+     * 都是AbstractChannel的子类，他们共有的属性为
+     * ChannelId: Channel的唯一标识
+     * Unsafe: TCP中的一些底层配置
+     * DefaultChannelPipeline: 网络编程中有关的业务逻辑处理链
      * Creates a new instance.
      *
      * @param parent

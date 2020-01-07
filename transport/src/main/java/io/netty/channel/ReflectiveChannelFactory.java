@@ -42,7 +42,9 @@ public class ReflectiveChannelFactory<T extends Channel> implements ChannelFacto
     public T newChannel() {
         try {
             /**
-             * 反射创建服务端Channel实例
+             * 反射创建服务端Channel实例,example中EchoServer中传入ServerBootstrap .channel(NioServerSocketChannel.class)
+             * 此处newInstance()反射创建的是NioServerSocketChannel实例, 然后跳转到 {@link io.netty.channel.socket.nio.NioServerSocketChannel} 类中，查看NioServerSocketChannel
+             * 的无参构造方法
              */
             return constructor.newInstance();
         } catch (Throwable t) {
